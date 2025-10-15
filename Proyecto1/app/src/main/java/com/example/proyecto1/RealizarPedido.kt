@@ -18,6 +18,7 @@ import com.example.proyecto1.datos.BebidaPedida
 import com.example.proyecto1.datos.Precios
 import com.example.proyecto1.modelo.*
 import com.example.proyecto1.ui.theme.Proyecto1Theme
+import androidx.compose.ui.graphics.Color
 
 class RealizarPedido : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +39,8 @@ fun HacerPedido(modifier: Modifier = Modifier) {
     var pedido by remember { mutableStateOf(Pedido()) }
 
     fun calcularPrecioTotal() {
+        // Asegúrate de que los objetos Pizza y BebidaPedida tienen los campos de precio unitario correctos si los necesitas aquí.
+        // Asumiendo que el cálculo actual es correcto (usa precioTamano y precioBebidas unitarios):
         val precioTamano = Precios.tamanos.find { it.nombre == pedido.tamano }?.precio ?: 0.0
         val precioBebidas = pedido.bebida?.precio ?: 0.0
         val total = (precioTamano * pedido.cantidadPizza) + (precioBebidas * pedido.cantidadBebida)
@@ -51,15 +54,35 @@ fun HacerPedido(modifier: Modifier = Modifier) {
             "Margarita" -> Margarita()
             else -> return
         }
-        pedido = pedido.copy(pizza = pizza)
+        pedido = pedido.copy(
+            pizza = pizza,
+            cantidadPizza = 1,
+            tamano = pedido.tamano.ifEmpty { Precios.tamanos.first().nombre }
+        )
+        calcularPrecioTotal()
+    }
+
+
+    fun eliminarPizza() {
+        pedido = pedido.copy(pizza = null, cantidadPizza = 0, tamano = "")
         calcularPrecioTotal()
     }
 
     fun seleccionarBebida(bebida: String) {
         val precio = Precios.bebidas.find { it.nombre == bebida }?.precio ?: 0.0
-        pedido = pedido.copy(bebida = BebidaPedida(nombre = bebida, precio = precio, cantidad = 1))
+
+        if (pedido.bebida == null || pedido.bebida?.nombre == bebida) {
+            pedido = pedido.copy(bebida = BebidaPedida(nombre = bebida, precio = precio, cantidad = 1))
+            calcularPrecioTotal()
+        }
+    }
+
+
+    fun eliminarBebida() {
+        pedido = pedido.copy(bebida = null, cantidadBebida = 0)
         calcularPrecioTotal()
     }
+
 
     Column(
         modifier = modifier
@@ -84,25 +107,90 @@ fun HacerPedido(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "Selecciona tu pizza:",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Selecciona tu pizza:",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            if (pedido.pizza != null) {
+                Button(onClick = { eliminarPizza() }, colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
+                    Text("Cambiar")
+                }
+            }
+        }
 
         Precios.tiposPizza.forEach { tipoPizza ->
+
+            val isEnabled = pedido.pizza == null || pedido.pizza?.nombre == tipoPizza
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
+
+                enabled = isEnabled,
+                colors = CardDefaults.cardColors(
+                    containerColor = when {
+                        !isEnabled -> Color.LightGray.copy(alpha = 0.5f) // Estilo deshabilitado
+                        pedido.pizza?.nombre == tipoPizza -> MaterialTheme.colorScheme.primaryContainer
+                        else -> MaterialTheme.colorScheme.surface
+                    }
+                ),
                 onClick = { seleccionarPizza(tipoPizza) }
             ) {
-                Text(text = tipoPizza, modifier = Modifier.padding(16.dp))
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = tipoPizza)
+                    if (pedido.pizza?.nombre == tipoPizza) {
+                        Text("✓", color = MaterialTheme.colorScheme.primary)
+                    }
+                }
             }
         }
 
+
         pedido.pizza?.let { pizza ->
+
             Spacer(modifier = Modifier.height(16.dp))
+
+
+            Text(
+                text = "Selecciona el tamaño:",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Precios.tamanos.forEach { tamano ->
+                    Button(
+                        onClick = {
+                            pedido = pedido.copy(tamano = tamano.nombre)
+                            calcularPrecioTotal()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (pedido.tamano == tamano.nombre) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    ) {
+                        Text(text = "${tamano.nombre} (${"%.2f".format(tamano.precio)}€)")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
 
             Text(
                 text = "Opciones para ${pizza.nombre}:",
@@ -139,11 +227,15 @@ fun HacerPedido(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+
             Text(
                 text = "Cantidad de pizzas:",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
+
+            // Define la condición para habilitar el botón de suma
+            val puedeSumarCantidad = pizza.opcionSeleccionada.isNotEmpty()
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -170,24 +262,51 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                     onClick = {
                         pedido = pedido.copy(cantidadPizza = pedido.cantidadPizza + 1)
                         calcularPrecioTotal()
-                    }
+                    },
+                    // CONDICIÓN AÑADIDA: Habilita el botón solo si la opción está seleccionada
+                    enabled = puedeSumarCantidad
                 ) { Text("+") }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "Selecciona bebida:",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Selecciona bebida:",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            if (pedido.bebida != null) {
+                Button(onClick = { eliminarBebida() }, colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
+                    Text("Cambiar")
+                }
+            }
+        }
+
 
         Precios.bebidas.forEach { bebida ->
+
+            val isEnabled = pedido.bebida == null || pedido.bebida?.nombre == bebida.nombre
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
+                enabled = isEnabled,
+                colors = CardDefaults.cardColors(
+                    containerColor = when {
+                        !isEnabled -> Color.LightGray.copy(alpha = 0.5f) // Estilo deshabilitado
+                        pedido.bebida?.nombre == bebida.nombre -> MaterialTheme.colorScheme.primaryContainer
+                        else -> MaterialTheme.colorScheme.surface
+                    }
+                ),
                 onClick = { seleccionarBebida(bebida.nombre) }
             ) {
                 Row(
@@ -202,6 +321,7 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                 }
             }
         }
+
 
         pedido.bebida?.let { bebida ->
             Spacer(modifier = Modifier.height(16.dp))
@@ -241,6 +361,29 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                 ) { Text("+") }
             }
         }
+
+        // --- SECCIÓN DE BOTONES ACEPTAR/CANCELAR AÑADIDA ---
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            Button(
+                onClick = { /* Aquí iría la lógica de CANCELAR/REINICIAR */ },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+            ) {
+                Text(text = "Cancelar", color = Color.Black)
+            }
+
+            Button(
+                onClick = { /* Aquí iría la lógica de ACEPTAR/CONFIRMAR */ },
+                enabled = pedido.pizza != null && pedido.tamano.isNotEmpty() // Ejemplo de habilitación
+            ) {
+                Text(text = "Aceptar")
+            }
+        }
+        // --- FIN SECCIÓN DE BOTONES ---
     }
 }
 

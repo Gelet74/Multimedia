@@ -37,7 +37,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             Proyecto1Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                   Inicio(
+                   /*Inicio(
+                        modifier = Modifier.padding(innerPadding)
+                    )*/
+                    HacerPedido(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -114,6 +117,6 @@ fun Inicio(modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     Proyecto1Theme {
-        Inicio()
+        HacerPedido()
     }
 }
