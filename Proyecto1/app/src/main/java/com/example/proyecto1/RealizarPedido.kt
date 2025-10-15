@@ -39,8 +39,7 @@ fun HacerPedido(modifier: Modifier = Modifier) {
     var pedido by remember { mutableStateOf(Pedido()) }
 
     fun calcularPrecioTotal() {
-        // Asegúrate de que los objetos Pizza y BebidaPedida tienen los campos de precio unitario correctos si los necesitas aquí.
-        // Asumiendo que el cálculo actual es correcto (usa precioTamano y precioBebidas unitarios):
+
         val precioTamano = Precios.tamanos.find { it.nombre == pedido.tamano }?.precio ?: 0.0
         val precioBebidas = pedido.bebida?.precio ?: 0.0
         val total = (precioTamano * pedido.cantidadPizza) + (precioBebidas * pedido.cantidadBebida)
@@ -105,9 +104,6 @@ fun HacerPedido(modifier: Modifier = Modifier) {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -160,9 +156,6 @@ fun HacerPedido(modifier: Modifier = Modifier) {
 
 
         pedido.pizza?.let { pizza ->
-
-            Spacer(modifier = Modifier.height(16.dp))
-
 
             Text(
                 text = "Selecciona el tamaño:",
