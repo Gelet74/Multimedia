@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Proyecto1</string>
-    <string name="nombre">name</string>
-    <string name="correo">e-mail</string>
-    <string name="tfno">cell</string>
+    <string name="nombre">Lucía García</string>
+    <string name="correo">example@something.com</string>
+    <string name="tfno">654 215 236</string>
+
+    <string name="label_nombre">NAME: </string>
+    <string name="label_correo">EMAIL: </string>
+    <string name="label_tfno">PHONE: </string>
 </resources>

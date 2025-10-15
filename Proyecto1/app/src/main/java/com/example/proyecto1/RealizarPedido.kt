@@ -154,7 +154,6 @@ fun HacerPedido(modifier: Modifier = Modifier) {
             }
         }
 
-
         pedido.pizza?.let { pizza ->
 
             Text(

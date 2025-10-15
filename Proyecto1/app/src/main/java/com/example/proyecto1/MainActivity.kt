@@ -37,12 +37,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             Proyecto1Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                   /*Inicio(
-                        modifier = Modifier.padding(innerPadding)
-                    )*/
-                    HacerPedido(
+                   Inicio(
                         modifier = Modifier.padding(innerPadding)
                     )
+                   /* VerPedidos(
+                        modifier = Modifier.padding(innerPadding)
+                    )*/
                 }
             }
         }
@@ -72,14 +72,14 @@ fun Inicio(modifier: Modifier = Modifier) {
             Row {
                 Column (modifier = Modifier .padding(top=20.dp)){
                     Text(
-                        text ="NOMBRE: " + stringResource(R.string.nombre)
+                        text = stringResource(R.string.label_nombre) + stringResource(R.string.nombre)
                     )
 
                     Text(
-                        text = "CORREO: " + stringResource(R.string.correo)
+                        text =  stringResource(R.string.label_correo) + stringResource(R.string.correo)
                     )
                     Text(
-                        text = "TFNO: " + stringResource(R.string.tfno)
+                        text = stringResource(R.string.label_tfno) + stringResource(R.string.tfno)
                     )
                 }
                 Image(
@@ -90,14 +90,14 @@ fun Inicio(modifier: Modifier = Modifier) {
 
         }
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(top=650.dp),
             horizontalArrangement = Arrangement.Center
-
         ) {
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .padding(start = 10.dp)
+
             ) {
                 Text(text = "HACER PEDIDO")
             }
@@ -105,7 +105,6 @@ fun Inicio(modifier: Modifier = Modifier) {
                 onClick = {},
                 modifier = Modifier
 
-                    .padding(end = 10.dp)
             ) {
                 Text(text = "VER PEDIDOS")
             }
@@ -117,6 +116,6 @@ fun Inicio(modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     Proyecto1Theme {
-        HacerPedido()
+        VerPedidos()
     }
 }

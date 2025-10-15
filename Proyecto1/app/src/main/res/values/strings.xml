@@ -1,7 +1,10 @@
 <resources>
-    <string name="app_name" translatable="false">Proyecto1</string>
-    <string name="nombre">Angela García</string>
-    <string name="correo">Ejemplo@algo.com</string>
-    <string name="tfno">654 875 647</string>
+    <string name="app_name" translatable="false">Pizzeria</string>
+    <string name="nombre">Lucía García</string>
+    <string name="correo">ejemplo@algo.com</string>
+    <string name="tfno">654 215 236</string>
 
+    <string name="label_nombre">NOMBRE: </string>
+    <string name="label_correo">CORREO: </string>
+    <string name="label_tfno">TFNO: </string>
 </resources>
