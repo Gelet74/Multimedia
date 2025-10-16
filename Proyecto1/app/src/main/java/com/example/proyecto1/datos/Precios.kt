@@ -16,6 +16,5 @@ object Precios {
         Bebida("Cola", 2.5),
         Bebida("Sin bebida", 0.0)
     )
-
     val tiposPizza = listOf("Romana", "Barbacoa", "Margarita")
 }

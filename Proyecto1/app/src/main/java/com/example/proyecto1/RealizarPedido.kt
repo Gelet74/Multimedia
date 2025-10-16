@@ -19,6 +19,7 @@ import com.example.proyecto1.datos.Precios
 import com.example.proyecto1.modelo.*
 import com.example.proyecto1.ui.theme.Proyecto1Theme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 
 class RealizarPedido : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +39,10 @@ class RealizarPedido : ComponentActivity() {
 fun HacerPedido(modifier: Modifier = Modifier) {
     var pedido by remember { mutableStateOf(Pedido()) }
 
+    val pizzaRomanaNombre = stringResource(R.string.pizza1)
+    val pizzaBarbacoaNombre = stringResource(R.string.pizza2)
+    val pizzaMargaritaNombre = stringResource(R.string.pizza3)
+
     fun calcularPrecioTotal() {
 
         val precioTamano = Precios.tamanos.find { it.nombre == pedido.tamano }?.precio ?: 0.0
@@ -48,9 +53,9 @@ fun HacerPedido(modifier: Modifier = Modifier) {
 
     fun seleccionarPizza(tipoPizza: String) {
         val pizza = when (tipoPizza) {
-            "Romana" -> Romana()
-            "Barbacoa" -> Barbacoa()
-            "Margarita" -> Margarita()
+            pizzaRomanaNombre -> Romana()
+            pizzaBarbacoaNombre -> Barbacoa()
+            pizzaMargaritaNombre -> Margarita()
             else -> return
         }
         pedido = pedido.copy(
@@ -226,8 +231,7 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
-            // Define la condición para habilitar el botón de suma
-            val puedeSumarCantidad = pizza.opcionSeleccionada.isNotEmpty()
+           val puedeSumarCantidad = pizza.opcionSeleccionada.isNotEmpty()
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -255,7 +259,7 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                         pedido = pedido.copy(cantidadPizza = pedido.cantidadPizza + 1)
                         calcularPrecioTotal()
                     },
-                    // CONDICIÓN AÑADIDA: Habilita el botón solo si la opción está seleccionada
+
                     enabled = puedeSumarCantidad
                 ) { Text("+") }
             }
@@ -354,7 +358,6 @@ fun HacerPedido(modifier: Modifier = Modifier) {
             }
         }
 
-        // --- SECCIÓN DE BOTONES ACEPTAR/CANCELAR AÑADIDA ---
         Spacer(modifier = Modifier.height(32.dp))
 
         Row(
@@ -362,23 +365,21 @@ fun HacerPedido(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Button(
-                onClick = { /* Aquí iría la lógica de CANCELAR/REINICIAR */ },
+                onClick = { },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
             ) {
                 Text(text = "Cancelar", color = Color.Black)
             }
 
             Button(
-                onClick = { /* Aquí iría la lógica de ACEPTAR/CONFIRMAR */ },
-                enabled = pedido.pizza != null && pedido.tamano.isNotEmpty() // Ejemplo de habilitación
+                onClick = { },
             ) {
                 Text(text = "Aceptar")
             }
         }
-        // --- FIN SECCIÓN DE BOTONES ---
+
     }
 }
-
 @Preview(showBackground = true)
 @Composable
 fun HacerPedidoPreview() {

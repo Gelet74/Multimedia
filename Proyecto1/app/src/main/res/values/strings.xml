@@ -3,8 +3,21 @@
     <string name="nombre">Lucía García</string>
     <string name="correo">ejemplo@algo.com</string>
     <string name="tfno">654 215 236</string>
+    <string name="pizza1">Romana</string>
+    <string name="pizza2">Barbacoa</string>
+    <string name="pizza3">Margarita</string>
+    <string name="bebida1">Agua</string>
+    <string name="bebida2">Cola</string>
+    <string name="bebida3">Sin bebida</string>
+    <string name="titulo_realizar_pedido">Realizar Pedido</string>
+    <string name="btn_cambiar">Cambiar</string>
+    <string name="txt_seleccionar_pizza">Selecciona tu pizza:</string>
+    <string name="txt_precio_total">Precio total</string>
 
     <string name="label_nombre">NOMBRE: </string>
     <string name="label_correo">CORREO: </string>
     <string name="label_tfno">TFNO: </string>
+
+
+
 </resources>
