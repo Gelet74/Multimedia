@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -39,12 +40,11 @@ class RealizarPedido : ComponentActivity() {
 fun HacerPedido(modifier: Modifier = Modifier) {
     var pedido by remember { mutableStateOf(Pedido()) }
 
-    val pizzaRomanaNombre = stringResource(R.string.pizza1)
-    val pizzaBarbacoaNombre = stringResource(R.string.pizza2)
-    val pizzaMargaritaNombre = stringResource(R.string.pizza3)
+    val pizzaRomanaNombre = "Romana"
+    val pizzaBarbacoaNombre = "Barbacoa"
+    val pizzaMargaritaNombre = "Margarita"
 
     fun calcularPrecioTotal() {
-
         val precioTamano = Precios.tamanos.find { it.nombre == pedido.tamano }?.precio ?: 0.0
         val precioBebidas = pedido.bebida?.precio ?: 0.0
         val total = (precioTamano * pedido.cantidadPizza) + (precioBebidas * pedido.cantidadBebida)
@@ -52,41 +52,27 @@ fun HacerPedido(modifier: Modifier = Modifier) {
     }
 
     fun seleccionarPizza(tipoPizza: String) {
-        val pizza = when (tipoPizza) {
+        val nuevaPizza = when (tipoPizza) {
             pizzaRomanaNombre -> Romana()
             pizzaBarbacoaNombre -> Barbacoa()
             pizzaMargaritaNombre -> Margarita()
             else -> return
         }
+
+        val pizzaConOpcion = when (nuevaPizza) {
+            is Romana -> Romana("")
+            is Barbacoa -> Barbacoa("")
+            is Margarita -> Margarita("")
+            else -> nuevaPizza
+        }
+
         pedido = pedido.copy(
-            pizza = pizza,
+            pizza = pizzaConOpcion,
             cantidadPizza = 1,
             tamano = pedido.tamano.ifEmpty { Precios.tamanos.first().nombre }
         )
         calcularPrecioTotal()
     }
-
-
-    fun eliminarPizza() {
-        pedido = pedido.copy(pizza = null, cantidadPizza = 0, tamano = "")
-        calcularPrecioTotal()
-    }
-
-    fun seleccionarBebida(bebida: String) {
-        val precio = Precios.bebidas.find { it.nombre == bebida }?.precio ?: 0.0
-
-        if (pedido.bebida == null || pedido.bebida?.nombre == bebida) {
-            pedido = pedido.copy(bebida = BebidaPedida(nombre = bebida, precio = precio, cantidad = 1))
-            calcularPrecioTotal()
-        }
-    }
-
-
-    fun eliminarBebida() {
-        pedido = pedido.copy(bebida = null, cantidadBebida = 0)
-        calcularPrecioTotal()
-    }
-
 
     Column(
         modifier = modifier
@@ -94,14 +80,10 @@ fun HacerPedido(modifier: Modifier = Modifier) {
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Text(
-            text = "Realizar Pedido",
-            style = MaterialTheme.typography.headlineMedium
-        )
+        Text("Realizar Pedido", style = MaterialTheme.typography.headlineMedium)
+        Spacer(Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(modifier = Modifier.fillMaxWidth()) {
+        Card(Modifier.fillMaxWidth()) {
             Text(
                 text = "Precio total: ${"%.2f".format(pedido.precioTotal)}€",
                 style = MaterialTheme.typography.headlineSmall,
@@ -109,64 +91,39 @@ fun HacerPedido(modifier: Modifier = Modifier) {
             )
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Selecciona tu pizza:",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
-            if (pedido.pizza != null) {
-                Button(onClick = { eliminarPizza() }, colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
-                    Text("Cambiar")
-                }
-            }
-        }
+        Text(
+            text = "Selecciona tu pizza:",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
 
         Precios.tiposPizza.forEach { tipoPizza ->
-
-            val isEnabled = pedido.pizza == null || pedido.pizza?.nombre == tipoPizza
-
+            val isSelected = pedido.pizza?.nombre == tipoPizza
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-
-                enabled = isEnabled,
+                    .padding(vertical = 4.dp)
+                    .clickable { seleccionarPizza(tipoPizza) },
                 colors = CardDefaults.cardColors(
-                    containerColor = when {
-                        !isEnabled -> Color.LightGray.copy(alpha = 0.5f) // Estilo deshabilitado
-                        pedido.pizza?.nombre == tipoPizza -> MaterialTheme.colorScheme.primaryContainer
-                        else -> MaterialTheme.colorScheme.surface
-                    }
-                ),
-                onClick = { seleccionarPizza(tipoPizza) }
+                    containerColor = if (isSelected)
+                        MaterialTheme.colorScheme.primaryContainer
+                    else
+                        MaterialTheme.colorScheme.surface
+                )
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = tipoPizza)
-                    if (pedido.pizza?.nombre == tipoPizza) {
-                        Text("✓", color = MaterialTheme.colorScheme.primary)
-                    }
+                    Text(tipoPizza)
                 }
             }
         }
 
         pedido.pizza?.let { pizza ->
-
-            Text(
-                text = "Selecciona el tamaño:",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
+            Spacer(Modifier.height(16.dp))
+            Text("Selecciona el tamaño:", style = MaterialTheme.typography.titleMedium)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
@@ -178,61 +135,54 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                             calcularPrecioTotal()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (pedido.tamano == tamano.nombre) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+
+                            containerColor = if (pedido.tamano == tamano.nombre)
+                                MaterialTheme.colorScheme.primary
+                            else
+                                MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = Color.Black
                         )
                     ) {
-                        Text(text = "${tamano.nombre} (${"%.2f".format(tamano.precio)}€)")
+                        Text("${tamano.nombre} (${"%.2f".format(tamano.precio)}€)")
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-            Text(
-                text = "Opciones para ${pizza.nombre}:",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
+            Spacer(Modifier.height(16.dp))
+            Text("Opciones para ${pizza.nombre}:", style = MaterialTheme.typography.titleMedium)
             pizza.opciones.forEach { opcion ->
+                val opcionSeleccionada = pizza.opcionSeleccionada == opcion
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    onClick = {
-                        val pizzaActualizada = when (pizza) {
-                            is Romana -> Romana(opcion)
-                            is Barbacoa -> Barbacoa(opcion)
-                            is Margarita -> Margarita(opcion)
-                            else -> pizza
-                        }
-                        pedido = pedido.copy(pizza = pizzaActualizada)
-                    }
+                        .padding(vertical = 4.dp)
+                        .clickable {
+                            val pizzaActualizada = when (pizza) {
+                                is Romana -> Romana(opcion)
+                                is Barbacoa -> Barbacoa(opcion)
+                                is Margarita -> Margarita(opcion)
+                                else -> pizza
+                            }
+                            pedido = pedido.copy(pizza = pizzaActualizada)
+                        },
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (opcionSeleccionada)
+                            MaterialTheme.colorScheme.primaryContainer
+                        else
+                            MaterialTheme.colorScheme.surface
+                    )
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = opcion)
-                        if (pizza.opcionSeleccionada == opcion) {
-                            Text("✓", color = MaterialTheme.colorScheme.primary)
-                        }
+                        Text(opcion)
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-            Text(
-                text = "Cantidad de pizzas:",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
-           val puedeSumarCantidad = pizza.opcionSeleccionada.isNotEmpty()
-
+            Spacer(Modifier.height(16.dp))
+            Text("Cantidad de pizzas:", style = MaterialTheme.typography.titleMedium)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -249,7 +199,7 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                 ) { Text("-") }
 
                 Text(
-                    text = pedido.cantidadPizza.toString(),
+                    pedido.cantidadPizza.toString(),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
@@ -258,76 +208,48 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                     onClick = {
                         pedido = pedido.copy(cantidadPizza = pedido.cantidadPizza + 1)
                         calcularPrecioTotal()
-                    },
-
-                    enabled = puedeSumarCantidad
+                    }
                 ) { Text("+") }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Selecciona bebida:",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
-            if (pedido.bebida != null) {
-                Button(onClick = { eliminarBebida() }, colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
-                    Text("Cambiar")
-                }
-            }
-        }
-
+        Spacer(Modifier.height(24.dp))
+        Text("Selecciona bebida:", style = MaterialTheme.typography.titleMedium)
 
         Precios.bebidas.forEach { bebida ->
-
-            val isEnabled = pedido.bebida == null || pedido.bebida?.nombre == bebida.nombre
-
+            val isSelected = pedido.bebida?.nombre == bebida.nombre
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                enabled = isEnabled,
+                    .padding(vertical = 4.dp)
+                    .clickable {
+                        if (isSelected || bebida.nombre == "Sin bebida") {
+                            pedido = pedido.copy(bebida = null, cantidadBebida = 0)
+                        } else {
+                            pedido = pedido.copy(
+                                bebida = BebidaPedida(nombre = bebida.nombre, precio = bebida.precio, cantidad = 1),
+                                cantidadBebida = 1
+                            )
+                        }
+                        calcularPrecioTotal()
+                    },
                 colors = CardDefaults.cardColors(
-                    containerColor = when {
-                        !isEnabled -> Color.LightGray.copy(alpha = 0.5f) // Estilo deshabilitado
-                        pedido.bebida?.nombre == bebida.nombre -> MaterialTheme.colorScheme.primaryContainer
-                        else -> MaterialTheme.colorScheme.surface
-                    }
-                ),
-                onClick = { seleccionarBebida(bebida.nombre) }
+                    containerColor = if (isSelected)
+                        MaterialTheme.colorScheme.primaryContainer
+                    else
+                        MaterialTheme.colorScheme.surface
+                )
             ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(bebida.nombre, style = MaterialTheme.typography.bodyLarge)
-                    if (pedido.bebida?.nombre == bebida.nombre) {
-                        Text("✓", color = MaterialTheme.colorScheme.primary)
-                    }
-                }
+                Text(
+                    bebida.nombre,
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         }
 
-
-        pedido.bebida?.let { bebida ->
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Cantidad de ${bebida.nombre}:",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
+        if (pedido.bebida != null && pedido.bebida?.nombre != "Sin bebida") {
+            Spacer(Modifier.height(8.dp))
+            Text("Cantidad de bebidas:", style = MaterialTheme.typography.titleMedium)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -344,7 +266,7 @@ fun HacerPedido(modifier: Modifier = Modifier) {
                 ) { Text("-") }
 
                 Text(
-                    text = pedido.cantidadBebida.toString(),
+                    pedido.cantidadBebida.toString(),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
@@ -358,28 +280,23 @@ fun HacerPedido(modifier: Modifier = Modifier) {
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
+        Spacer(Modifier.height(24.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
-            ) {
-                Text(text = "Cancelar", color = Color.Black)
+            Button(onClick = { })
+            {
+                Text("Cancelar")
             }
-
-            Button(
-                onClick = { },
-            ) {
-                Text(text = "Aceptar")
+            Button(onClick = { }) {
+                Text("Aceptar")
             }
         }
-
     }
 }
+
+
 @Preview(showBackground = true)
 @Composable
 fun HacerPedidoPreview() {

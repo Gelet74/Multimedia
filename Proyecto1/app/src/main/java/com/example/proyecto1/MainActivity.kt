@@ -21,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -37,12 +36,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             Proyecto1Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                  /*Inicio(
-                        modifier = Modifier.padding(innerPadding)
-                    )*/
-                   ResumenPedido(
+                  Inicio(
                         modifier = Modifier.padding(innerPadding)
                     )
+                    /*HacerPedido(
+                        modifier = Modifier.padding(innerPadding),
+
+                    )*/
                 }
             }
         }
@@ -116,6 +116,6 @@ fun Inicio(modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     Proyecto1Theme {
-        ResumenPedido()
+        HacerPedido()
     }
 }
