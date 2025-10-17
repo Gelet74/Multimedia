@@ -16,17 +16,18 @@ import com.example.proyecto1.datos.Pedido
 import com.example.proyecto1.modelo.*
 import com.example.proyecto1.ui.theme.Proyecto1Theme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import com.example.proyecto1.R
 
 @Composable
 fun ResumenPedido(modifier: Modifier = Modifier) {
     val pedidoDePrueba = Pedido(
-        pizza = Margarita("Vegana"),
-        tamano = "Mediana",
+        pizza = Barbacoa("Carne de Cerdo"),
+        tamano =  stringResource(R.string.tamano_mediana),
         cantidadPizza = 2,
-        bebida = BebidaPedida("Cola", 0.0, 3),
-        cantidadBebida = 3,
-        precioTotal = 25.0
+        bebida = BebidaPedida(stringResource(R.string.bebida1), 2.0, 3),
+        cantidadBebida = 2,
+        precioTotal = 13.9
     )
 
     Column(
@@ -53,7 +54,7 @@ fun ResumenPedido(modifier: Modifier = Modifier) {
         }
 
         Text(
-            text = "Resumen del Pedido",
+            text = stringResource(R.string.resumen_title),
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -67,18 +68,18 @@ fun ResumenPedido(modifier: Modifier = Modifier) {
                         style = MaterialTheme.typography.headlineSmall
                     )
                     Text(
-                        text = "Tamaño: ${pedidoDePrueba.tamano}",
+                        text = stringResource(R.string.label_tamano)+" " + pedidoDePrueba.tamano,
                         style = MaterialTheme.typography.headlineSmall
                     )
                     Text(
-                        text = "Cantidad: ${pedidoDePrueba.cantidadPizza}",
+                        text = stringResource(R.string.label_cantidad)+" " + pedidoDePrueba.cantidadPizza,
                         style = MaterialTheme.typography.headlineSmall
                     )
 
                     if (pizza.opcionSeleccionada.isNotEmpty()) {
                         Divider(modifier = Modifier.padding(vertical = 8.dp))
                         ItemConFotoPequena(
-                            nombre = "Opción: ${pizza.opcionSeleccionada}",
+                            nombre = stringResource(R.string.label_opcion)+ " "  + pizza.opcionSeleccionada,
                             descripcion = "",
                             imagenResId = obtenerImagenOpcionPizza(pizza.nombre, pizza.opcionSeleccionada)
                         )
@@ -93,7 +94,7 @@ fun ResumenPedido(modifier: Modifier = Modifier) {
             Card(modifier = Modifier.fillMaxWidth()) {
                 ItemConFotoPequena(
                     nombre = bebida.nombre,
-                    descripcion = "Cantidad: ${bebida.cantidad}",
+                    descripcion = stringResource(R.string.label_cantidad) + bebida.cantidad,
                     imagenResId = obtenerImagenBebida(bebida.nombre),
                     modifier = Modifier.padding(16.dp)
                 )
@@ -114,10 +115,10 @@ fun ResumenPedido(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Button(onClick = { }) {
-                Text("Cancelar")
+                Text(stringResource(R.string.btn_cancelar))
             }
             Button(onClick = { }) {
-                Text("Formulario de pago")
+                Text(stringResource(R.string.pago_form_title))
             }
         }
     }
@@ -160,20 +161,20 @@ private fun obtenerImagenPizza(nombre: String): Int? {
 private fun obtenerImagenOpcionPizza(nombrePizza: String, opcion: String): Int? {
     return when (nombrePizza) {
         "Romana" -> when (opcion) {
-            "Con Champiñones" -> R.drawable.champi
-            "Sin Champiñones" -> R.drawable.sin_champi
+            "Con Champiñones", "With Mushrooms" -> R.drawable.champi
+            "Sin Champiñones", "Without Mushrooms"  -> R.drawable.sin_champi
             else -> null
         }
         "Barbacoa" -> when (opcion) {
-            "Carne de Pollo" -> R.drawable.pollo
-            "Carne de Cerdo" -> R.drawable.cerdo
-            "Carne de Ternera" -> R.drawable.ternera
+            "Carne de Pollo", "Chicken Meat" -> R.drawable.pollo
+            "Carne de Cerdo", "Pork Meat" -> R.drawable.cerdo
+            "Carne de Ternera", "Beef Meat" -> R.drawable.ternera
             else -> null
         }
         "Margarita" -> when (opcion) {
-            "Con piña" -> R.drawable.pina
-            "Sin piña" -> R.drawable.sin_pina
-            "Vegana" -> R.drawable.vegana
+            "Con piña", "With Pineapple" -> R.drawable.pina
+            "Sin piña", "Without Pineapple" -> R.drawable.sin_pina
+            "Vegana", "Vegan" -> R.drawable.vegana
             else -> null
         }
         else -> null
@@ -187,6 +188,22 @@ private fun obtenerImagenBebida(nombre: String): Int? {
         "Sin bebida" -> R.drawable.sin_bebida
         else -> null
     }
+}
+
+@Composable
+fun obtenerOpcionTraducida(opcionEstatica: String): String {
+    val stringId = when (opcionEstatica) {
+        "Con Champiñones" -> R.string.opcion_champi
+        "Sin Champiñones" -> R.string.opcion_sin_champi
+        "Carne de Cerdo" -> R.string.opcion_cerdo
+        "Carne de Pollo" -> R.string.opcion_pollo
+        "Carne de Ternera" -> R.string.opcion_ternera
+        "Con piña" -> R.string.opcion_pina
+        "Sin piña" -> R.string.opcion_sin_pina
+        "Vegana" -> R.string.opcion_vegana
+        else -> return opcionEstatica
+    }
+    return stringResource(id = stringId)
 }
 
 @Preview(showBackground = true)

@@ -13,13 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.proyecto1.ui.theme.Proyecto1Theme
 import com.example.proyecto1.R
 
-// Definición de las opciones de pago (solo tarjetas)
+
 data class OpcionPago(val nombre: String, val iconoResId: Int)
 
 val opcionesPago = listOf(
@@ -44,13 +45,13 @@ fun FormularioPago(modifier: Modifier = Modifier) {
     ) {
 
         Text(
-            text = "Formulario de Pago",
+            text = stringResource(R.string.pago_form_title),
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier.padding(bottom = 24.dp, top = 8.dp)
         )
 
         Text(
-            text = "Selecciona el tipo de tarjeta:",
+            text = stringResource(R.string.label_seleccionar_tarjeta),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         )
@@ -97,13 +98,13 @@ fun FormularioPago(modifier: Modifier = Modifier) {
 
 
         OutlinedTextField(
-            value = numeroTarjeta,
+            value = stringResource(R.string.label_num_tarjeta),
             onValueChange = {
                 if (it.length <= 16 && it.all { char -> char.isDigit() }) {
                     numeroTarjeta = it
                 }
             },
-            label = { Text("Número de Tarjeta") },
+            label = { stringResource (R.string.label_num_tarjeta) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
@@ -121,7 +122,7 @@ fun FormularioPago(modifier: Modifier = Modifier) {
                         fechaCaducidad = it
                     }
                 },
-                label = { Text("Fecha Caducidad (MM/AA)") },
+                label = { stringResource(R.string.label_fecha_cad) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f).padding(end = 8.dp)
             )
@@ -147,16 +148,15 @@ fun FormularioPago(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Button(
-                onClick = {  },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
-            ) {
-                Text(text = "Cancelar", color = Color.Black)
+                onClick = {  })
+            {
+                Text(text = stringResource(R.string.btn_cancelar))
             }
 
             Button(
                 onClick = {  }
             ) {
-                Text(text = "Aceptar")
+                Text(text = stringResource(R.string.btn_aceptar))
             }
         }
     }

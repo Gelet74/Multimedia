@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.proyecto1.datos.Pedido
@@ -33,7 +34,7 @@ fun ResumenPago(modifier: Modifier = Modifier) {
         cantidadBebida = 3,
         precioTotal = 25.0
     )
-    val datosPagoDePrueba = DatosPago(tipoTarjeta = "MasterCard")
+    val datosPagoDePrueba = DatosPago(tipoTarjeta = "Euro6000")
     val nombreCliente = "Sara Gómez"
 
     Column(
@@ -52,13 +53,13 @@ fun ResumenPago(modifier: Modifier = Modifier) {
         ) {
             Image(
                 painter = painterResource(id = obtenerImagenTarjeta(datosPagoDePrueba.tipoTarjeta) ?: R.drawable.ic_launcher_foreground),
-                contentDescription = "Tipo de Tarjeta",
+                contentDescription =  stringResource(R.string.tipo_tarj),
                 modifier = Modifier.size(180.dp)
             )
         }
 
         Text(
-            text = "Resumen del Pago",
+            text = stringResource(R.string.pago_resumen_title),
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -67,7 +68,7 @@ fun ResumenPago(modifier: Modifier = Modifier) {
             Column(modifier = Modifier.padding(16.dp)) {
 
                 Text(
-                    text = "Cliente: $nombreCliente",
+                    text = stringResource(R.string.label_cliente)+": "  +nombreCliente,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
@@ -75,13 +76,13 @@ fun ResumenPago(modifier: Modifier = Modifier) {
                 Divider(modifier = Modifier.padding(vertical = 4.dp))
 
                 ItemConFotoPequena(
-                    nombre = "Tarjeta Elegida:",
+                    nombre =  stringResource(R.string.tarjeta_elegida),
                     descripcion = datosPagoDePrueba.tipoTarjeta,
                     imagenResId = null
                 )
 
                 ItemConFotoPequena(
-                    nombre = "Número:",
+                    nombre = stringResource(R.string. label_num_tarjeta)+": ",
                     descripcion = datosPagoDePrueba.ultimosDigitos,
                     imagenResId = null
                 )
@@ -91,7 +92,7 @@ fun ResumenPago(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "CANTIDAD A PAGAR: ${"%.2f".format(pedidoDePrueba.precioTotal)}€",
+            text = stringResource(R.string.label_total_pagado) + " " + "%.2f".format(pedidoDePrueba.precioTotal) + "€",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -102,15 +103,11 @@ fun ResumenPago(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            Button(onClick = {
-                /* Lógica: Navegar a Inicio */
-            }) {
-                Text("Aceptar")
+            Button(onClick = {}) {
+                Text(stringResource(R.string.btn_aceptar))
             }
-            Button(onClick = {
-                /* Lógica: Enviar Correo */
-            }) {
-                Text("Enviar")
+            Button(onClick = {}) {
+                Text(stringResource(R.string.btn_enviar))
             }
         }
     }

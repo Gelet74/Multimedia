@@ -39,9 +39,8 @@ class MainActivity : ComponentActivity() {
                   Inicio(
                         modifier = Modifier.padding(innerPadding)
                     )
-                    /*HacerPedido(
+                    /*FormularioPago(
                         modifier = Modifier.padding(innerPadding),
-
                     )*/
                 }
             }
@@ -62,6 +61,7 @@ fun Inicio(modifier: Modifier = Modifier) {
             painter = imagen,
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
+            alpha = 0.5f,
             modifier = Modifier.fillMaxSize()
         )
     Column {
@@ -72,14 +72,14 @@ fun Inicio(modifier: Modifier = Modifier) {
             Row {
                 Column (modifier = Modifier .padding(top=20.dp)){
                     Text(
-                        text = stringResource(R.string.label_nombre) + stringResource(R.string.nombre)
+                        text = stringResource(R.string.label_nombre)+" " + stringResource(R.string.nombre)
                     )
 
                     Text(
-                        text =  stringResource(R.string.label_correo) + stringResource(R.string.correo)
+                        text =  stringResource(R.string.label_correo)+" " + stringResource(R.string.correo)
                     )
                     Text(
-                        text = stringResource(R.string.label_tfno) + stringResource(R.string.tfno)
+                        text = stringResource(R.string.label_tfno)+" " + stringResource(R.string.tfno)
                     )
                 }
                 Image(
@@ -99,14 +99,14 @@ fun Inicio(modifier: Modifier = Modifier) {
                 modifier = Modifier
 
             ) {
-                Text(text = "HACER PEDIDO")
+                Text(text = stringResource(R.string.hacer_pedido))
             }
             Button(
                 onClick = {},
                 modifier = Modifier
 
             ) {
-                Text(text = "VER PEDIDOS")
+                Text(text = stringResource(R.string.ver_pedidos))
             }
         }
     }
@@ -116,6 +116,6 @@ fun Inicio(modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     Proyecto1Theme {
-        HacerPedido()
+        Inicio()
     }
 }

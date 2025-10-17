@@ -3,13 +3,13 @@
     <string name="nombre">Lucía García</string>
     <string name="correo">example@something.com</string>
     <string name="tfno">654 215 236</string>
+
     <string name="pizza1">Roman</string>
-    <string name="pizza2">"Barbecue "</string>
+    <string name="pizza2">Barbecue</string>
     <string name="pizza3">Margherita</string>
     <string name="bebida1">Water</string>
     <string name="bebida2">Coke</string>
     <string name="bebida3">No drink</string>
-
 
     <string name="opcion_pina">With Pineapple</string>
     <string name="opcion_sin_pina">Without Pineapple</string>
@@ -22,12 +22,18 @@
 
     <string name="titulo_realizar_pedido">Place Order</string>
     <string name="btn_cambiar">Change</string>
-    <string name="txt_seleccionar_pizza">Select your pizza:</string>
+    <string name="txt_seleccionar_pizza">Select your pizza</string>
+    <string name="txt_seleccionar_bebida">Select your drink</string>
     <string name="txt_precio_total">Total Price</string>
+    <string name="label_seleccionar_tamano">Choose Size</string>
+    <string name="label_cantidad_bebidas">Drink quantity</string>
+    <string name="tipo_tarj">Card Kind</string>
+    <string name="tarjeta_elegida">Choosen Card:</string>
+    <string name="cant_pagar">Total Account</string>
+
     <string name="label_nombre">NAME:</string>
     <string name="label_correo">EMAIL:</string>
     <string name="label_tfno">PHONE:</string>
-
     <string name="btn_cancelar">Cancel</string>
     <string name="btn_aceptar">Accept</string>
     <string name="btn_enviar">Send</string>
@@ -56,9 +62,15 @@
     <string name="label_metodo">Method</string>
     <string name="label_tarjeta_cuenta">Card/Account</string>
     <string name="label_total_pagado">TOTAL PAID:</string>
-    <string name="email_asunto_justificante">Payment receipt for %1$s</string>
+    <string name="email_asunto_justificante">"Payment receipt "</string>
     <string name="mensaje_pago_realizado">Payment successful</string>
-    <string name="label_cantidad_bebidas">amount of drink</string>
-    <string name="label_seleccionar_tamano">choose size</string>
 
+    <string name="tamano_pequena">Small</string>
+    <string name="tamano_mediana">Medium</string>
+    <string name="tamano_grande">Large</string>
+
+    <string name="hacer_pedido">Make order</string>
+    <string name="ver_pedidos">See orders</string>
+
+    <string name="app_name" translatable="false">Pizzeria</string>
 </resources>

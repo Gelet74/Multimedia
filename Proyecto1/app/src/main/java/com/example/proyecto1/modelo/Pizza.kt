@@ -4,16 +4,7 @@ open class Pizza(
     open val nombre: String = "",
     open val opciones: List<String> = emptyList(),
     open val opcionSeleccionada: String = ""
-) {
-
-    open fun calcularPrecioExtra(): Double {
-        return when (this) {
-            is Barbacoa -> 1.0  // Precio extra por la carne
-            is Margarita -> if (opcionSeleccionada == "Versión vegana") 0.5 else 0.0
-            else -> 0.0
-        }
-    }
-}
+)
 
 class Romana(opcionSeleccionada: String = "") :
     Pizza("Romana", listOf("Con champiñones", "Sin champiñones"), opcionSeleccionada)
